@@ -20,7 +20,26 @@
         "command": "mdPreviewer.preview",
         "title": "MD Previewer: Preview Active File"
       }
-    ]
+    ],
+    "keybindings": [
+      {
+        "command": "mdPreviewer.preview",
+        "key": "ctrl+shift+v",
+        "mac": "cmd+shift+v",
+        "when": "editorLangId == markdown"
+      }
+    ],
+    "menus":
+      {
+        "editor/title": [
+          {
+            "command": "mdPreviewer.preview",
+            "title": "Preview MD",
+            "group": "navigation",
+            "when": "editorLangId == markdown"
+          }
+        ]
+      }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

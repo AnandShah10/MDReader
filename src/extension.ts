@@ -1,88 +1,109 @@
 import * as vscode from 'vscode';
 import * as marked from 'marked';
 
-let previewPanel: vscode.WebviewPanel | undefined;
+let previewPanel: vscode.WebviewPanel | undefined = undefined;
+let globalContext: vscode.ExtensionContext | undefined = undefined;
 
 export function activate(context: vscode.ExtensionContext) {
+  globalContext = context;
+  console.log('MD Previewer activated');
 
-    const disposable = vscode.commands.registerCommand('mdPreviewer.preview', () => {
-        previewMarkdown(context);
-    });
-    context.subscriptions.push(disposable);
+  // Register the command
+  const disposable = vscode.commands.registerCommand('mdPreviewer.preview', () => {
+    previewMarkdown();
+  });
 
-    vscode.workspace.onDidChangeTextDocument(event => {
-        if (vscode.window.activeTextEditor?.document.languageId === 'markdown') {
-            previewMarkdown(context);
-        }
-    });
+  context.subscriptions.push(disposable);
+
+  // Optional: Auto-preview on MD file open (commented out for now)
+  // vscode.workspace.onDidOpenTextDocument(doc => {
+  //   if (doc.languageId === 'markdown' && vscode.window.activeTextEditor?.document === doc) {
+  //     previewMarkdown();
+  //   }
+  // });
 }
 
-function previewMarkdown(context: vscode.ExtensionContext) {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-        vscode.window.showInformationMessage('No active editor found.');
-        return;
+function previewMarkdown() {
+  if (!globalContext) {
+    vscode.window.showErrorMessage('Extension context not initialized.');
+    return;
+  }
+
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    vscode.window.showInformationMessage('No active editor found.');
+    return;
+  }
+
+  if (editor.document.languageId !== 'markdown') {
+    vscode.window.showInformationMessage('Active file is not a Markdown file.');
+    return;
+  }
+
+  const document = editor.document;
+  const content = document.getText();
+
+  // Parse Markdown
+  const htmlContent = marked.parse(content).toString();
+
+  // Create or reuse panel
+  if (previewPanel) {
+    previewPanel.dispose();
+  }
+
+  previewPanel = vscode.window.createWebviewPanel(
+    'mdPreviewer',
+    'MD Preview',
+    vscode.ViewColumn.Beside, // Open beside editor
+    {
+      enableScripts: true,
+      retainContextWhenHidden: true,
+      localResourceRoots: [vscode.Uri.joinPath(globalContext.extensionUri, 'media')]
     }
-    if (editor.document.languageId !== 'markdown') {
-        vscode.window.showInformationMessage('Active file is not a Markdown file.');
-        return;
+  );
+
+  // Inject CSS and HTML
+  previewPanel.webview.html = getWebviewContent(htmlContent, previewPanel.webview);
+
+  // Handle disposal
+  previewPanel.onDidDispose(() => {
+    previewPanel = undefined;
+  });
+
+  // Update on editor change (basic sync)
+  const changeDisposable = vscode.workspace.onDidChangeTextDocument(e => {
+    if (e.document.uri.toString() === document.uri.toString() && previewPanel) {
+      const updatedContent = e.document.getText();
+      const updatedHtml = marked.parse(updatedContent).toString();
+      previewPanel.webview.html = getWebviewContent(updatedHtml, previewPanel.webview);
     }
+  });
 
-    const document = editor.document;
-    const content = document.getText();
-
-    const htmlContent: string = marked.parse(content).toString();
-
-    if (previewPanel) {
-        previewPanel.reveal(vscode.ViewColumn.Beside);
-    } else {
-        previewPanel = vscode.window.createWebviewPanel(
-            'mdPreviewer',
-            'MD Preview',
-            vscode.ViewColumn.Beside,
-            {
-                enableScripts: true,
-                retainContextWhenHidden: true,
-                localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, 'media')]
-            }
-        );
-
-        previewPanel.onDidDispose(() => {
-            previewPanel = undefined;
-        });
-    }
-
-    previewPanel.webview.html = getWebviewContent(htmlContent, previewPanel.webview, context);
-
-    const changeDisposable = vscode.workspace.onDidChangeTextDocument(e => {
-        if (e.document.uri.toString() === document.uri.toString() && previewPanel) {
-            const updatedHtml: string = marked.parse(e.document.getText()).toString();
-            previewPanel.webview.html = getWebviewContent(updatedHtml, previewPanel.webview, context);
-        }
-    });
-
-    previewPanel.onDidDispose(() => changeDisposable.dispose());
+  previewPanel.onDidDispose(() => changeDisposable.dispose());
 }
 
-function getWebviewContent(htmlContent: string, webview: vscode.Webview, context: vscode.ExtensionContext): string {
-    const cssUri = webview.asWebviewUri(
-        vscode.Uri.joinPath(context.extensionUri, 'media', 'preview.css')
-    );
+function getWebviewContent(htmlContent: string, webview: vscode.Webview): string {
+  if (!globalContext) {
+    return '<html><body>Error: Context not available.</body></html>';
+  }
 
-    return `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MD Preview</title>
-    <link href="${cssUri}" rel="stylesheet">
-</head>
-<body>
-    <div class="markdown-body">
-        ${htmlContent}
-    </div>
-</body>
-</html>`;
+  // Load CSS from media folder
+  const cssUri = webview.asWebviewUri(vscode.Uri.joinPath(globalContext.extensionUri, 'media', 'preview.css'));
+
+  return `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>MD Preview</title>
+      <link href="${cssUri}" rel="stylesheet">
+  </head>
+  <body>
+      <div class="markdown-body">
+          ${htmlContent}
+      </div>
+  </body>
+  </html>`;
 }
 
 export function deactivate() {}
