@@ -3,7 +3,6 @@
 [![GitHub Repo stars](https://img.shields.io/github/stars/AnandShah10/MDReader?style=social)](https://github.com/AnandShah10/MDReader)
 [![GitHub issues](https://img.shields.io/github/issues/AnandShah10/MDReader)](https://github.com/AnandShah10/MDReader/issues)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Marketplace](https://vsmarketplacebadge.apphb.com/version/AnandShah10.mdreader.svg)](https://marketplace.visualstudio.com/items?itemName=AnandShah10.mdreader)
 
 ## Overview
 
