@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es2020",                   // Modern JS features
+    "module": "commonjs",                 // Node-style modules
+    "lib": ["es2020"],                    // Include ES2020 libs
+    "outDir": "out",                      // Compiled JS output
+    "rootDir": "src",                     // Source folder
+    "strict": true,                       // Enable all strict type checks
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,                 // Skip type checks for dependencies
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,                     // Useful for debugging
+    "types": ["node", "vscode"]           // Load Node and VS Code typings
+  },
+  "exclude": [
+    "node_modules",
+    ".vscode-test",
+    "out"
+  ]
+}
