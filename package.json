@@ -1,8 +1,13 @@
 {
-  "name": "md-preview-extension",
-  "displayName": "MD File Previewer",
-  "description": "A custom Markdown previewer for VSCode",
+  "name": "mdreader",
+  "displayName": "MD Reader",
+  "description": "A professional Markdown previewer extension for Visual Studio Code, providing a customizable webview panel to render Markdown files with enhanced styling.",
   "version": "0.0.1",
+  "publisher": "AnandShah10",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AnandShah10/MDReader.git"
+  },
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -11,14 +16,14 @@
   ],
   "activationEvents": [
     "onLanguage:markdown",
-    "onCommand:mdPreviewer.preview"
+    "onCommand:mdreader.preview"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "mdPreviewer.preview",
-        "title": "MD Previewer: Preview Active File"
+        "command": "mdreader.preview",
+        "title": "MD Reader: Preview Active File"
       }
     ]
   },
@@ -35,5 +40,9 @@
   },
   "dependencies": {
     "marked": "^12.0.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/AnandShah10/MDReader/issues"
+  },
+  "homepage": "https://github.com/AnandShah10/MDReader#readme"
 }

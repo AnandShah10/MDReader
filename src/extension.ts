@@ -5,7 +5,7 @@ let previewPanel: vscode.WebviewPanel | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
 
-    const disposable = vscode.commands.registerCommand('mdPreviewer.preview', () => {
+    const disposable = vscode.commands.registerCommand('mdreader.preview', () => {
         previewMarkdown(context);
     });
     context.subscriptions.push(disposable);
@@ -37,8 +37,8 @@ function previewMarkdown(context: vscode.ExtensionContext) {
         previewPanel.reveal(vscode.ViewColumn.Beside);
     } else {
         previewPanel = vscode.window.createWebviewPanel(
-            'mdPreviewer',
-            'MD Preview',
+            'mdreader',
+            'MD Reader Preview',
             vscode.ViewColumn.Beside,
             {
                 enableScripts: true,
@@ -74,7 +74,7 @@ function getWebviewContent(htmlContent: string, webview: vscode.Webview, context
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MD Preview</title>
+    <title>MD Reader Preview</title>
     <link href="${cssUri}" rel="stylesheet">
 </head>
 <body>
