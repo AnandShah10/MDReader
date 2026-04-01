@@ -88,7 +88,7 @@ If you encounter any issues or have suggestions, please report them on the [Issu
 
 - **Name**: Anand Shah
 - **GitHub**: [@AnandShah10](https://github.com/AnandShah10)
-- **Email**: (Optional - add if desired)
+- **Email**: [shahanand1072004@gmail.com](mailto:shahanand1072004@gmail.com)
 
 ## License
 

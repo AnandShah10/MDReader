@@ -2,7 +2,7 @@
   "name": "mdreader",
   "displayName": "MD Reader",
   "description": "A professional Markdown previewer extension for Visual Studio Code, providing a customizable webview panel to render Markdown files with enhanced styling.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "AnandShah",
   "repository": {
     "type": "git",
